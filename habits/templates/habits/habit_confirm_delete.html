@@ -1,0 +1,13 @@
+{% extends 'habits/base.html' %}
+{% block title %}Delete {{ habit.title }}{% endblock %}
+{% block content %}
+<section class="auth-card glass">
+    <h2>Delete habit</h2>
+    <p>Are you sure you want to delete <strong>{{ habit.title }}</strong>?</p>
+    <form method="post" class="form-actions">
+        {% csrf_token %}
+        <button class="btn danger" type="submit">Yes, delete</button>
+        <a class="btn ghost" href="{% url 'dashboard' %}">Cancel</a>
+    </form>
+</section>
+{% endblock %}

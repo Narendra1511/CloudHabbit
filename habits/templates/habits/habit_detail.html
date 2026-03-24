@@ -1,0 +1,60 @@
+{% extends 'habits/base.html' %}
+{% block title %}{{ habit.title }} | CloudHabit{% endblock %}
+{% block content %}
+<section class="dashboard-header glass">
+    <div>
+        <p class="eyebrow">Habit detail</p>
+        <h1>{{ habit.title }}</h1>
+        <p class="muted">{{ habit.description|default:'No description available.' }}</p>
+    </div>
+    <a class="btn ghost" href="{% url 'dashboard' %}">Back</a>
+</section>
+
+<section class="dashboard-grid">
+    <div class="card">
+        <h3>Habit summary</h3>
+        <p><strong>Category:</strong> {{ habit.category|default:'General' }}</p>
+        <p><strong>Frequency:</strong> {{ habit.frequency }}</p>
+        <p><strong>Target:</strong> {{ habit.target_per_day }} per day</p>
+        <p><strong>Current streak:</strong> {{ habit.current_streak }} days</p>
+        <p><strong>Completion rate:</strong> {{ habit.completion_rate }}%</p>
+    </div>
+    <div class="card">
+        <h3>Add or update a log</h3>
+        <form method="post" action="{% url 'log_update_or_create' habit.pk %}" class="form-grid">
+            {% csrf_token %}
+            {% for field in form %}
+                <div>
+                    <label>{{ field.label }}</label>
+                    {{ field }}
+                    {% for error in field.errors %}<small class="error">{{ error }}</small>{% endfor %}
+                </div>
+            {% endfor %}
+            <button class="btn" type="submit">Save log</button>
+        </form>
+    </div>
+</section>
+
+<section class="card list-card">
+    <div class="section-head"><h3>Recent logs</h3></div>
+    {% if logs %}
+        <table class="table">
+            <thead>
+                <tr><th>Date</th><th>Status</th><th>Count</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+            {% for log in logs %}
+                <tr>
+                    <td>{{ log.date }}</td>
+                    <td>{% if log.completed %}✅ Done{% else %}⏳ Pending{% endif %}</td>
+                    <td>{{ log.completed_count }}</td>
+                    <td>{{ log.notes|default:'-' }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="muted">No logs yet for this habit.</p>
+    {% endif %}
+</section>
+{% endblock %}

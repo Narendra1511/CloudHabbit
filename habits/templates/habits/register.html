@@ -1,0 +1,18 @@
+{% extends 'habits/base.html' %}
+{% block title %}Register | CloudHabit{% endblock %}
+{% block content %}
+<section class="auth-card glass">
+    <h2>Create your account</h2>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {% for field in form %}
+            <div>
+                <label>{{ field.label }}</label>
+                {{ field }}
+                {% for error in field.errors %}<small class="error">{{ error }}</small>{% endfor %}
+            </div>
+        {% endfor %}
+        <button class="btn" type="submit">Register</button>
+    </form>
+</section>
+{% endblock %}

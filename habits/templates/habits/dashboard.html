@@ -1,0 +1,58 @@
+{% extends 'habits/base.html' %}
+{% block title %}Dashboard | CloudHabit{% endblock %}
+{% block content %}
+<section class="dashboard-header glass">
+    <div>
+        <p class="eyebrow">Your cloud dashboard</p>
+        <h1>Hello, {{ user.username }}</h1>
+        <p class="muted">Track tiny actions consistently and make your progress visible.</p>
+    </div>
+    <a class="btn" href="{% url 'habit_create' %}">+ Add Habit</a>
+</section>
+
+<section class="stats-grid">
+    <div class="card stat"><span>{{ total_habits }}</span><small>Total habits</small></div>
+    <div class="card stat"><span>{{ active_habits }}</span><small>Active habits</small></div>
+    <div class="card stat"><span>{{ completed_today }}</span><small>Completed today</small></div>
+    <div class="card stat"><span>{{ total_logs }}</span><small>Total completed logs</small></div>
+</section>
+
+<section class="dashboard-grid">
+    <div class="card chart-card">
+        <div class="section-head"><h3>Completion overview</h3></div>
+        <canvas id="habitChart" data-labels='{{ chart_labels|safe }}' data-values='{{ chart_values|safe }}'></canvas>
+    </div>
+
+    <div class="card list-card">
+        <div class="section-head"><h3>Your habits</h3></div>
+        {% if habits %}
+            <div class="habit-list">
+                {% for habit in habits %}
+                    <article class="habit-item {{ habit.color_theme }}">
+                        <div>
+                            <div class="habit-topline">
+                                <h4>{{ habit.title }}</h4>
+                                <span class="badge">{{ habit.frequency }}</span>
+                            </div>
+                            <p>{{ habit.description|default:'No description added yet.' }}</p>
+                            <div class="meta-row">
+                                <span>🔥 {{ habit.current_streak }} day streak</span>
+                                <span>📈 {{ habit.completion_rate }}% complete</span>
+                                <span>🎯 Target {{ habit.target_per_day }}/day</span>
+                            </div>
+                        </div>
+                        <div class="habit-actions">
+                            <a class="btn mini ghost" href="{% url 'habit_detail' habit.pk %}">View</a>
+                            <a class="btn mini ghost" href="{% url 'habit_update' habit.pk %}">Edit</a>
+                            <a class="btn mini danger" href="{% url 'habit_delete' habit.pk %}">Delete</a>
+                            <a class="btn mini" href="{% url 'toggle_today' habit.pk %}">Toggle today</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="muted">No habits yet. Create your first one to begin tracking.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
