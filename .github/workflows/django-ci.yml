@@ -1,9 +1,10 @@
-@'
+@"
 name: Django CI/CD to EC2
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   test-and-deploy:
@@ -24,24 +25,19 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run Django checks
-        run: |
-          python manage.py check
+        run: python manage.py check
 
       - name: Run tests
-        run: |
-          python manage.py test
+        run: python manage.py test
 
       - name: Install lint and security tools
-        run: |
-          pip install flake8 bandit
+        run: pip install flake8 bandit
 
       - name: Run lint
-        run: |
-          flake8 . --exclude=venv,migrations,staticfiles --max-line-length=120 || true
+        run: flake8 . --exclude=venv,migrations,staticfiles --max-line-length=120 || true
 
       - name: Run security scan
-        run: |
-          bandit -r . -x ./venv,./migrations,./staticfiles || true
+        run: bandit -r . -x ./venv,./migrations,./staticfiles || true
 
       - name: Add SSH key
         shell: bash
@@ -64,4 +60,4 @@ jobs:
             sudo systemctl restart gunicorn
             sudo systemctl restart nginx
           EOF
-'@ | Set-Content .github\workflows\deploy.yml
+"@ | Set-Content .github\workflows\deploy.yml
